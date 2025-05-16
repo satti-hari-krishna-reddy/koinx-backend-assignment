@@ -1,0 +1,78 @@
+version: "3.8"
+
+services:
+  redis:
+    image: redis:latest
+    container_name: redis-container
+    restart: unless-stopped
+    command: redis-server --requirepass ${REDIS_PASSWORD}
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+    ports:
+      - "6379:6379"
+    networks:
+      - app_network
+    volumes:
+      - redis_data:/data
+
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGO_DB}
+    ports:
+      - "27017:27017"
+    networks:
+      - app_network
+    volumes:
+      - mongo_data:/data/db
+
+  koinx-api:
+    image: sattihari/koinx-api:latest
+    container_name: koinx-api_container
+    restart: unless-stopped
+    depends_on:
+      - redis
+      - mongodb
+    environment:
+      MONGO_URI: ${MONGO_URI}
+      REDIS_ADDR: "redis-container:6379"
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      REDIS_DB: ${REDIS_DB}
+      REDIS_USE_TLS: ${REDIS_USE_TLS}
+      REDIS_CHANNEL_NAME: ${REDIS_CHANNEL_NAME}
+      COINGECKO_API_KEY: ${COINGECKO_API_KEY}
+      COINGECKO_BASE_URL: ${COINGECKO_BASE_URL}
+      NODE_ENV: "production"
+      PORT: ${PORT}
+
+    ports:
+      - "3000:3000"
+    networks:
+      - app_network
+
+  koinx-worker:
+    image: sattihari/koinx-worker:latest
+    container_name: koinx-worker_container
+    restart: unless-stopped
+    environment:
+      REDIS_ADDR: "redis-container:6379"
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      REDIS_DB: ${REDIS_DB}
+      REDIS_USE_TLS: ${REDIS_USE_TLS}
+      REDIS_CHANNEL_NAME: ${REDIS_CHANNEL_NAME}
+      NODE_ENV: "production"
+
+    networks:
+      - app_network
+
+networks:
+  app_network:
+    driver: bridge
+
+volumes:
+  redis_data:
+  mongo_data:
