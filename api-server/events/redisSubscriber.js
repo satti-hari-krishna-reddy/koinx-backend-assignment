@@ -1,6 +1,9 @@
-require('dotenv').config({ path: '../../.env' }); 
 const { getRedisSubscriber } = require('../config/redis');
 const { storeCryptoStats } = require('../services/storeCryptoStats');
+
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config({ path: '../.env' });
+}
 
 const REDIS_CHANNEL = process.env.REDIS_CHANNEL_NAME || 'crypto_update'; 
 async function initRedisSubscriber() {
