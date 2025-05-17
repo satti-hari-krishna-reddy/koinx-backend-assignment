@@ -5,6 +5,9 @@ This project was created as part of the take-home backend assignment for the **K
 The assignment involves building a full-stack backend system that interacts with external APIs (CoinGecko), MongoDB, and communicates between two servers using Redis Pub/Sub (as a replacement for NATS). The system is containerized and deployable.
 
 ---
+![Koinx](https://github.com/user-attachments/assets/97078474-34ba-4e44-b57a-dc297a310ee5)
+
+---
 
 ## ✅ Quickstart (Local Setup)
 
