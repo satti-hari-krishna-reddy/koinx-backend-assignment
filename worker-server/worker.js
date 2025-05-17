@@ -12,14 +12,10 @@ const {
   REDIS_CHANNEL_NAME = 'crypto_update'
 } = process.env;
 
-const dbIndex = parseInt(REDIS_DB, 10) || 0;
-const socket = REDIS_USE_TLS.toLowerCase() === 'true' ? { tls: {} } : {};
+const scheme = REDIS_USE_TLS.toLowerCase() === 'true' ? 'rediss' : 'redis';
+const redisUrl = `${scheme}://${REDIS_PASSWORD ? `:${encodeURIComponent(REDIS_PASSWORD)}@` : ''}${REDIS_ADDR}/${REDIS_DB}`;
 
-const redisUrl = `redis://${REDIS_PASSWORD ? `:${encodeURIComponent(REDIS_PASSWORD)}@` : ''}${REDIS_ADDR}/${dbIndex}`;
-const client = createClient({
-  url: redisUrl,
-  socket: socket
-});
+const client = createClient({ url: redisUrl });
 
 client.on('error', err => {
   console.error('[ERROR] Redis client error:', err.message);
