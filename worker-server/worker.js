@@ -44,6 +44,3 @@ startPublisher().catch(err => {
   console.error('[ERROR] Worker failed to start:', err.message);
   process.exit(1);
 });
-
-
-//MONGO_URI = "mongodb://root:MongoDbStrongPassword123@mongodb:27017/koinx?authSource=admin";
