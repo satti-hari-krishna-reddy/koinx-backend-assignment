@@ -58,6 +58,8 @@ services:
     image: sattihari/koinx-worker:latest
     container_name: koinx-worker_container
     restart: unless-stopped
+    depends_on:
+      - redis
     environment:
       REDIS_ADDR: "redis-container:6379"
       REDIS_PASSWORD: ${REDIS_PASSWORD}
