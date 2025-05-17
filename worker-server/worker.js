@@ -24,9 +24,6 @@ client.on('error', err => {
 async function startPublisher() {
   await client.connect();
   console.log('[INFO] Worker connected to Redis, will publish every 15 minutes');
-
-  await publishUpdate();
-
   setInterval(publishUpdate, 15 * 60 * 1000);
 }
 
