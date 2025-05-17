@@ -2,6 +2,7 @@ const app = require('./app');
 const connectDB = require('./config/db');
 const {connectRedis} = require('./config/redis');
 const initRedisSubscriber = require('./events/redisSubscriber');
+const {storeCryptoStats} = require('./services/storeCryptoStats');
 
 const PORT = process.env.PORT || 3000;
 
@@ -9,6 +10,7 @@ async function start() {
   await connectDB();
   await connectRedis();
   await initRedisSubscriber();
+  await storeCryptoStats();
 
 
   app.listen(PORT, () => {
