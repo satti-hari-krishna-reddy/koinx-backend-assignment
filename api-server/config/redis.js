@@ -14,13 +14,11 @@ const {
 let RedisClient;
 
 async function connectRedis() {
-  const dbIndex = parseInt(REDIS_DB, 10) || 0;
-  const socket = REDIS_USE_TLS.toLowerCase() === 'true' ? { tls: {} } : {};
+const scheme = REDIS_USE_TLS.toLowerCase() === 'true' ? 'rediss' : 'redis';
+const redisUrl = `${scheme}://${REDIS_PASSWORD ? `:${encodeURIComponent(REDIS_PASSWORD)}@` : ''}${REDIS_ADDR}/${REDIS_DB}`;
 
-  RedisClient = createClient({
-    url: `redis://${REDIS_PASSWORD ? `:${encodeURIComponent(REDIS_PASSWORD)}@` : ''}${REDIS_ADDR}/${dbIndex}`,
-    socket
-  });
+
+  RedisClient = createClient({ url: redisUrl });
 
   RedisClient.on('error', err => {
     console.log('[ERROR] Redis client error:', err.message);
